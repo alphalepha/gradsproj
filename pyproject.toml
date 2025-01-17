@@ -1,5 +1,5 @@
 [project]
-name = "grads-proj"
+name = ""
 version = "0.1.0"
 description = ""
 authors = [
@@ -12,10 +12,8 @@ dependencies = [
     "plotly (>=5.24.1,<6.0.0)",
     "yfinance (>=0.2.51,<0.3.0)",
     "pandas (>=2.2.3,<3.0.0)",
-    "numpy (>=2.2.1,<3.0.0)",
-    "setuptools (>=75.8.0,<76.0.0)"
+    "numpy (>=2.2.1,<3.0.0)"
 ]
-
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
