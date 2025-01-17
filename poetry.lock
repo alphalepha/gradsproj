@@ -1130,17 +1130,6 @@ files = [
 six = ">=1.5"
 
 [[package]]
-name = "pytils"
-version = "0.3"
-description = "Russian-specific string utils"
-optional = false
-python-versions = "*"
-groups = ["main"]
-files = [
-    {file = "pytils-0.3.tar.gz", hash = "sha256:1e85118d095d48928fef1a73e3e1dccdbc07bc931131705976b7dd05b66627fc"},
-]
-
-[[package]]
 name = "pytz"
 version = "2024.2"
 description = "World timezone definitions, modern and historical"
@@ -1445,22 +1434,6 @@ files = [
 ]
 
 [[package]]
-name = "tools"
-version = "0.1.9"
-description = "Set of tools for web scraping projects"
-optional = false
-python-versions = "*"
-groups = ["main"]
-files = [
-    {file = "tools-0.1.9.tar.gz", hash = "sha256:7b7f998462cf5b02635fba76cc7cdb3653468aa46ff074b979dbecdb2a2fb014"},
-]
-
-[package.dependencies]
-lxml = "*"
-pytils = "*"
-six = "*"
-
-[[package]]
 name = "tornado"
 version = "6.4.2"
 description = "Tornado is a Python web framework and asynchronous networking library, originally developed at FriendFeed."
@@ -1611,4 +1584,4 @@ repair = ["scipy (>=1.6.3)"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12"
-content-hash = "9df0ae5966a31920f9901628258b526b8c581f2b7913322e1f69f10c31261fe4"
+content-hash = "765ab16bd71e5cd6b3e4cd4195a595376faa87a7dcf9b4aeae6a8924a8f080d7"
