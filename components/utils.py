@@ -17,8 +17,8 @@ def calculate_performance(players_data, start_date, end_date):
 
     stock_data = yf.download(list(unique_stocks), start=start_date, end=end_date)['Close']
     if stock_data.empty or stock_data.dropna(how='all').empty:
-        raise ValueError(
-            "Failed to access yahoo finance data.")
+        st.error('Error: Yahoo finance data is not available.')
+        st.stop()
 
     stock_cumulative_returns = pd.DataFrame(index=stock_data.index, columns=stock_data.columns)
 
