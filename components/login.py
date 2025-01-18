@@ -2,12 +2,11 @@ import streamlit as st
 
 
 def login():
-    st.title("Login")
+    st.markdown("Please login.")
     username = st.text_input("Username")
     password = st.text_input("Password", type="password")
     login_button = st.button("Login")
 
-    # Access credentials from secrets
     ADMIN_USERNAME = st.secrets["credentials"]["username"]
     ADMIN_PASSWORD = st.secrets["credentials"]["password"]
 
@@ -17,4 +16,4 @@ def login():
             st.success("Successfully logged in!")
             st.rerun()
         else:
-            st.error("Invalid username or password")
+            st.error("Invalid username or password.")
