@@ -18,9 +18,9 @@ st.markdown("<span class='highlight'> Success depends upon previous preparation,
 st.divider()
 
 start_date = st.secrets["dates"]["start_date"]
-end_date = datetime.today().strftime('%Y-%m-%d')
+end_date = datetime.today().strftime('%Y-%m- %d')
 players_data = st.secrets["players"]["players"]
-player_emojis = st.secrets["player_emojis"]
+
 fig, fig_stocks, leaderboard_df = plot_performance_with_emojis(players_data, start_date, end_date)
 
 col1, col2 = st.columns([8, 2])
