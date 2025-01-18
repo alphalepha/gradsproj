@@ -3,6 +3,8 @@ import pandas as pd
 import yfinance as yf
 import json
 
+import streamlit as st
+
 
 def calculate_performance(players_data, start_date, end_date):
     players_portfolio = json.loads(players_data)
@@ -18,7 +20,7 @@ def calculate_performance(players_data, start_date, end_date):
     stock_cumulative_returns = pd.DataFrame(index=stock_data.index, columns=stock_data.columns)
 
     stock_cumulative_returns.iloc[0] = 100
-    stock_daily_returns = stock_data.pct_change()
+    stock_daily_returns = stock_data.pct_change(fill_method=None)
     stock_cumulative_returns.iloc[1:] = (1 + stock_daily_returns.iloc[1:]).cumprod() * 100
 
     ticker_to_name = {ticker: yf.Ticker(ticker).info.get("shortName", ticker) for ticker in stock_data.columns}
@@ -33,7 +35,7 @@ def calculate_performance(players_data, start_date, end_date):
         player_cumulative_returns = pd.Series(index=player_stock_data.index, dtype=float)
         player_cumulative_returns.iloc[0] = 100
 
-        player_daily_returns = player_stock_data.pct_change().mean(axis=1)
+        player_daily_returns = player_stock_data.pct_change(fill_method=None).mean(axis=1)
         player_cumulative_returns.iloc[1:] = (1 + player_daily_returns.iloc[1:]).cumprod() * 100
 
         performance_data[player_name] = player_cumulative_returns
@@ -87,7 +89,6 @@ def plot_performance_with_emojis(players_data, start_date, end_date):
     )
 
     fig_stocks = go.Figure()
-    print(stocks_performance_df)
     for stock in stocks_performance_df.columns:
         fig_stocks.add_trace(
             go.Scatter(
@@ -97,7 +98,6 @@ def plot_performance_with_emojis(players_data, start_date, end_date):
                 name=stock
             )
         )
-
     fig_stocks.update_layout(
         xaxis_title="Date",
         yaxis_title="Cumulative Performance",
@@ -113,3 +113,29 @@ def plot_performance_with_emojis(players_data, start_date, end_date):
         margin=dict(l=0, r=0, t=0, b=0)
     )
     return fig, fig_stocks, performance_df
+
+
+def markdown():
+    print('########## RERUN ##########')
+    st.markdown(
+        """
+        <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
+        <style>
+        .highlight {
+            background-color: #FF6600;  /* Orange background */
+            color: #FFFFFF;  /* White text for contrast */
+            padding: 0.1em 0.2em;  /* Adjust padding to reduce space */
+            border-radius: 1px;
+            display: inline-block; /* Prevent block-level spacing issues */
+        }
+        h3, h1 {
+            margin: 0;  /* Remove default margin */
+            padding: 0; /* Remove padding */
+        }
+        .stApp {
+            font-family: 'Orbitron', sans-serif;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
