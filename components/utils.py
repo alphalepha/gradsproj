@@ -16,10 +16,13 @@ def calculate_performance(players_data, start_date, end_date):
         unique_stocks.update(player['picks'])
 
     stock_data = yf.download(list(unique_stocks), start=start_date, end=end_date)['Close']
+    if stock_data.empty or stock_data.dropna(how='all').empty:
+        raise ValueError(
+            "Failed to access yahoo finance data.")
 
     stock_cumulative_returns = pd.DataFrame(index=stock_data.index, columns=stock_data.columns)
 
-    stock_cumulative_returns.iloc[0] = 100
+    stock_cumulative_returns.iloc[0, :] = 100
     stock_daily_returns = stock_data.pct_change(fill_method=None)
     stock_cumulative_returns.iloc[1:] = (1 + stock_daily_returns.iloc[1:]).cumprod() * 100
 
