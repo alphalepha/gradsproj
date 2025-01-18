@@ -31,7 +31,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-st.markdown("<span class='highlight'>WANNA BE BBG TERMINAL</span>", unsafe_allow_html=True)
+st.markdown("<span class='highlight'>It doesn't matter how slowly you go as long as you do not stop.</span> Confucius.", unsafe_allow_html=True)
 
 start_date = st.secrets["dates"]["start_date"]
 end_date = datetime.today().strftime('%Y-%m-%d')

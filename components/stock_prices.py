@@ -78,9 +78,9 @@ def plot_performance_with_emojis(players_data, player_emojis, start_date, end_da
 
     # Update layout
     fig.update_layout(
-        title="Player Portfolio Performance",
+        title="...",
         xaxis_title="Date",
-        yaxis_title="Cumulative Return",
+        yaxis_title="Performance",
         showlegend=True
     )
 
