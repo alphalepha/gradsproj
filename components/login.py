@@ -15,5 +15,6 @@ def login():
         if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
             st.session_state["logged_in"] = True
             st.success("Successfully logged in!")
+            st.rerun()
         else:
             st.error("Invalid username or password")
