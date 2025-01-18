@@ -1,6 +1,6 @@
 import streamlit as st
 from components.login import login
-from datetime import datetime
+from datetime import datetime, timedelta
 from components.utils import plot_performance_with_emojis, display_leaderboard, markdown
 
 st.set_page_config(page_title="asdf", layout="wide", )
@@ -11,15 +11,14 @@ if "logged_in" not in st.session_state:
 if not st.session_state["logged_in"]:
     login()
     st.stop()
-
-
+    
 markdown()
 
 st.markdown("<span class='highlight'> Success depends upon previous preparation, and without such preparation, there is sure to be failure. </span> -- Confucius.", unsafe_allow_html=True)
 st.divider()
 
 start_date = st.secrets["dates"]["start_date"]
-end_date = datetime.today().strftime('%Y-%m- %d')
+end_date = (datetime.today()).strftime('%Y-%m-%d')
 players_data = st.secrets["players"]["players"]
 
 fig, fig_stocks, leaderboard_df = plot_performance_with_emojis(players_data, start_date, end_date)

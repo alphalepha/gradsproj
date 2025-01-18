@@ -14,7 +14,7 @@ def calculate_performance(players_data, start_date, end_date):
 
     for player in players_portfolio:
         unique_stocks.update(player['picks'])
-
+    print(start_date, end_date)
     stock_data = yf.download(list(unique_stocks), start=start_date, end=end_date)['Close']
     if stock_data.empty or stock_data.dropna(how='all').empty:
         st.error('Error: Yahoo finance data is not available.')
