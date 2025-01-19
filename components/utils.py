@@ -118,7 +118,7 @@ def plot_performance_with_emojis(players_data, start_date, end_date):
     return fig, fig_stocks, performance_df
 
 
-def markdown():
+def bbg_styling():
     print('########## RERUN ##########')
     st.markdown(
         """
@@ -140,5 +140,26 @@ def markdown():
         }
         </style>
         """,
+        unsafe_allow_html=True
+    )
+
+
+def custom_divider(color="black", thickness="1px", margin="10px 0"):
+    """
+    Displays a customizable divider line in Streamlit.
+
+    Parameters:
+    - color (str): The color of the line (default is 'black').
+    - thickness (str): The thickness of the line (default is '1px').
+    - margin (str): The margin around the line (default is '10px 0').
+    """
+    st.markdown(
+        f"""
+            <hr style="
+                border: none;
+                border-top: {thickness} solid {color};
+                margin: {margin};
+            ">
+            """,
         unsafe_allow_html=True
     )
