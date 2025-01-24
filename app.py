@@ -2,9 +2,9 @@ import streamlit as st
 from components.login import login
 from datetime import datetime
 import json
-from components.utils import plot_performance_with_emojis, display_leaderboard, styling, custom_divider, create_upset_plot
+from components.utils import plot_performance_with_emojis, display_leaderboard, styling, custom_divider
 
-st.set_page_config(page_title="asdf", layout="wide", )
+st.set_page_config(page_title="grads game", layout="wide", page_icon='🥦')
 
 if "logged_in" not in st.session_state:
     st.session_state["logged_in"] = False
