@@ -51,7 +51,7 @@ def calculate_performance(players_data, start_date, end_date):
     stock_daily_returns = combined_data.pct_change(fill_method=None)
     stock_cumulative_returns.iloc[1:, :] = (1 + stock_daily_returns.iloc[1:, :]).cumprod() * 100
 
-    ticker_to_name = {ticker: yf.Ticker(ticker).info.get("shortName", ticker) for ticker in combined_data.columns}
+    ticker_to_name = {ticker: yf.Ticker(ticker).info.get("longName", ticker) for ticker in combined_data.columns}
     stock_cumulative_returns.rename(columns=ticker_to_name, inplace=True)
 
     for player in players_portfolio:
@@ -188,3 +188,66 @@ def custom_divider(color="black", thickness="1px", margin="10px 0"):
             """,
         unsafe_allow_html=True
     )
+
+@st.cache_data
+def map_stock_codes_to_names(stock_codes):
+    """
+    Map stock codes to their full names using yfinance.
+    """
+    stock_info = {}
+    for code in stock_codes:
+        try:
+            stock = yf.Ticker(code)
+            stock_info[code] = stock.info.get('longName', code)
+        except Exception as e:
+            stock_info[code] = code  # Fallback to code if info is not available
+    return stock_info
+
+
+@st.cache_data
+def create_player_stock_table(players_json):
+    # Parse the JSON string
+    players = json.loads(players_json)
+
+    # Extract all stock codes
+    all_stock_codes = {code for player in players for code in player['picks']}
+
+    # Map stock codes to real names using yfinance
+    all_stocks = map_stock_codes_to_names(all_stock_codes)
+
+    # Create an empty DataFrame with stocks as index and players as columns
+    table = pd.DataFrame(index=all_stocks.values(), columns=[player['name'] for player in players])
+
+    # Populate the table with 'x' where a player has the stock
+    for player in players:
+        for pick in player['picks']:
+            real_name = all_stocks.get(pick, pick)
+            table.loc[real_name, player['name']] = 'x'
+
+    # Replace NaN with empty string
+    table = table.fillna('')
+
+    return table.transpose()
+
+
+@st.cache_data
+def get_stock_description(stock_code):
+    """
+    Fetch a short company description for a provided stock code using yfinance.
+    """
+    try:
+        stock = yf.Ticker(stock_code)
+        description = stock.info.get('longBusinessSummary', "Description not available")
+        return description
+    except Exception as e:
+        return "Error retrieving description: " + str(e)
+
+
+@st.cache_data
+def get_unique_stock_list(players_json):
+    """
+    Extract a list of unique stock codes from the players JSON string.
+    """
+    players = json.loads(players_json)
+    unique_stocks = sorted({code for player in players for code in player['picks']})
+    return unique_stocks

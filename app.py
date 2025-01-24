@@ -1,10 +1,10 @@
 import streamlit as st
 from components.login import login
 from datetime import datetime
-import json
-from components.utils import plot_performance_with_emojis, display_leaderboard, styling, custom_divider
+from components.utils import plot_performance_with_emojis, display_leaderboard, styling, \
+    custom_divider, create_player_stock_table, get_unique_stock_list, get_stock_description, map_stock_codes_to_names
 
-st.set_page_config(page_title="grads game", layout="wide", page_icon='🥦')
+st.set_page_config(page_title="grads game v2.0", layout="wide", page_icon=":rainbow:")
 
 if "logged_in" not in st.session_state:
     st.session_state["logged_in"] = False
@@ -33,7 +33,7 @@ if len(fig.data) == 0 and len(fig_stocks.data) == 0 and leaderboard_df.empty:
     st.stop()
 
 col1, col2 = st.columns([8, 2])
-col1.markdown("<H3 style='margin: 0;'><span class='highlight'>Performance Chart (Chart will reset when game starts officially)</span></H3>", unsafe_allow_html=True)
+col1.markdown("<H3 style='margin: 0;'><span class='highlight'>Performance Chart</span></H3>", unsafe_allow_html=True)
 col1.plotly_chart(fig)
 col2.markdown("<H3 style='margin: 0;'><span class='highlight'>LEADERBOARD</span></H3>", unsafe_allow_html=True)
 col2.dataframe(display_leaderboard(leaderboard_df), hide_index=True, use_container_width=True)
@@ -42,3 +42,16 @@ custom_divider(color="#007BFF", thickness="3px", margin="20px 0")
 
 st.markdown("<H5 style='margin: 0;'><span class='highlight'>Individual Stocks</span></H3>", unsafe_allow_html=True)
 st.plotly_chart(fig_stocks)
+
+unique_stock_list = get_unique_stock_list(players_data)
+stock_name_mapping = map_stock_codes_to_names(unique_stock_list)
+st.markdown("<H5 style='margin: 0;'><span class='highlight'>Choose a stock for a short company description:</span></H3>", unsafe_allow_html=True)
+selected_stock = st.selectbox('', unique_stock_list, format_func=lambda code: stock_name_mapping.get(code, code))
+
+st.markdown(get_stock_description(selected_stock))
+st.divider()
+
+table = create_player_stock_table(players_data)
+st.write("Portfolio Overview")
+col1.markdown("<H3 style='margin: 0;'><span class='highlight'>Portfolio Overview</span></H3>", unsafe_allow_html=True)
+st.dataframe(table)
