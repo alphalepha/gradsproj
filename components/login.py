@@ -3,7 +3,7 @@ import streamlit as st
 
 def login():
     st.markdown("Please login.")
-    username = st.text_input("Username")
+    # username = st.text_input("Username")
     password = st.text_input("Password", type="password")
     login_button = st.button("Login")
 
@@ -11,7 +11,7 @@ def login():
     ADMIN_PASSWORD = st.secrets["credentials"]["password"]
 
     if login_button:
-        if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
+        if password == ADMIN_PASSWORD:  # and username == ADMIN_USERNAME
             st.session_state["logged_in"] = True
             st.success("Successfully logged in!")
             st.rerun()

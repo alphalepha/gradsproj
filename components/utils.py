@@ -121,6 +121,8 @@ def plot_performance_with_emojis(players_data, start_date, end_date):
             xanchor="center",
             x=0.5
         ),
+        paper_bgcolor='rgba(255, 255, 255, 0.5)',
+        plot_bgcolor='rgba(255, 255, 255, 0.5)',
         margin=dict(l=0, r=0, t=0, b=0)
     )
 
@@ -146,6 +148,8 @@ def plot_performance_with_emojis(players_data, start_date, end_date):
             xanchor="center",
             x=0.5
         ),
+        paper_bgcolor='rgba(255, 255, 255, 0.5)',
+        plot_bgcolor='rgba(255, 255, 255, 0.5)',
         margin=dict(l=0, r=0, t=0, b=0)
     )
     return fig, fig_stocks, performance_df

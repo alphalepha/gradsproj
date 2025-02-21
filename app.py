@@ -6,6 +6,22 @@ from components.utils import plot_performance_with_emojis, display_leaderboard, 
 
 st.set_page_config(page_title="grads game v2.0", layout="wide", page_icon=":rainbow:")
 
+# Background image URL (can be local or online)
+bg_image_url = "https://png.pngtree.com/background/20230108/original/pngtree-background-white-gray-gradient-business-vector-picture-image_1996067.jpg"
+
+# Inject custom CSS
+page_bg = f"""
+<style>
+    .stApp {{
+        background: url("{bg_image_url}") no-repeat center center fixed;
+        background-size: cover;
+    }}
+</style>
+"""
+
+st.markdown(page_bg, unsafe_allow_html=True)
+
+
 if "logged_in" not in st.session_state:
     st.session_state["logged_in"] = False
 
@@ -36,6 +52,7 @@ col1, col2 = st.columns([8, 2])
 col1.markdown("<H3 style='margin: 0;'><span class='highlight'>Performance Chart</span></H3>", unsafe_allow_html=True)
 col1.plotly_chart(fig)
 col2.markdown("<H3 style='margin: 0;'><span class='highlight'>LEADERBOARD</span></H3>", unsafe_allow_html=True)
+
 col2.dataframe(display_leaderboard(leaderboard_df), hide_index=True, use_container_width=True)
 
 custom_divider(color="#007BFF", thickness="3px", margin="20px 0")
