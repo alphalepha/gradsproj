@@ -63,8 +63,8 @@ def calculate_performance(players_data, start_date, end_date):
         player_cumulative_returns = pd.Series(index=stock_cumulative_returns.index, dtype=float)
         player_cumulative_returns.iloc[0] = 100
 
-        player_daily_returns = player_stock_data.pct_change(fill_method=None).mean(axis=1)
-        player_cumulative_returns.iloc[1:] = (1 + player_daily_returns.iloc[1:]).cumprod() * 100
+        player_daily_returns = player_stock_data.pct_change(fill_method=None)
+        player_cumulative_returns.iloc[1:] = ((1 + player_daily_returns.iloc[1:]).cumprod() * 100).mean(axis=1)
 
         performance_data[player_name] = player_cumulative_returns
 
