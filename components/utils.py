@@ -6,11 +6,12 @@ import yfinance as yf
 
 
 def calculate_performance(players_data, start_date, end_date):
+    import time
+
     players_portfolio = json.loads(players_data)
 
     start_date = pd.to_datetime(start_date).replace(hour=0, minute=0, second=0, microsecond=0)
     end_date = pd.to_datetime(end_date).replace(hour=0, minute=0, second=0, microsecond=0)
-
     day_before_start_date = start_date - pd.Timedelta(days=1)
 
     performance_data = {}
@@ -19,45 +20,67 @@ def calculate_performance(players_data, start_date, end_date):
     for player in players_portfolio:
         unique_stocks.update(player['picks'])
 
-    start_date_data = yf.download(list(unique_stocks), start=start_date, end=start_date + pd.Timedelta(days=1), interval="1d")
-    if start_date_data.empty:
+    opening_prices = {}
+    closing_prices_start_date = {}
+    historical_data = pd.DataFrame()
+    recent_prices = {}
+
+    for ticker in unique_stocks:
+        try:
+            print(f"Downloading {ticker}...")
+            df = yf.download(ticker, start=start_date - pd.Timedelta(days=1), end=end_date + pd.Timedelta(days=1), interval="1d", auto_adjust=True, progress=False)
+            if not df.empty:
+                df.index = pd.to_datetime(df.index)
+
+                if start_date in df.index:
+                    opening_prices[ticker] = df.loc[start_date]['Open']
+                    closing_prices_start_date[ticker] = df.loc[start_date]['Close']
+
+                filtered = df[df.index > start_date]['Close']
+                if not filtered.empty:
+                    historical_data[ticker] = filtered
+
+                if df.index[-1] <= end_date:
+                    recent_prices[ticker] = df.loc[df.index[-1]]['Close']
+        except Exception as e:
+            print(f"{ticker} failed: {e}")
+        time.sleep(2)
+
+    if not opening_prices or not closing_prices_start_date or historical_data.empty:
         return pd.DataFrame(), pd.DataFrame()
 
-    opening_prices = start_date_data['Open'].iloc[0]
-    closing_prices_start_date = start_date_data['Close'].iloc[0]
-    opening_prices.name = start_date
-    closing_prices_start_date.name = start_date
+    opening_prices = pd.Series(opening_prices, name=start_date)
+    closing_prices_start_date = pd.Series(closing_prices_start_date, name=start_date)
 
-    historical_data = yf.download(list(unique_stocks), start=start_date + pd.Timedelta(days=1), end=end_date)['Close']
-    if historical_data.empty or historical_data.dropna(how='all').empty:
-        return pd.DataFrame(), pd.DataFrame()
-
-    recent_data = yf.download(list(unique_stocks), period="1d")['Close']
-    if not recent_data.empty:
-        most_recent_prices = recent_data.iloc[-1]
-        most_recent_prices.name = end_date
+    if recent_prices:
+        most_recent_prices = pd.Series(recent_prices, name=end_date)
         historical_data = pd.concat([historical_data, pd.DataFrame([most_recent_prices])])
-    else:
-        return pd.DataFrame(), pd.DataFrame()
 
     combined_data = pd.concat([
         pd.DataFrame([opening_prices]),
         pd.DataFrame([closing_prices_start_date]),
-        historical_data])
+        historical_data
+    ])
 
-    stock_cumulative_returns = pd.DataFrame(index=[day_before_start_date] + list(combined_data.index[1:]), columns=combined_data.columns)
-
+    stock_cumulative_returns = pd.DataFrame(index=[day_before_start_date] + list(combined_data.index[1:]),
+                                            columns=combined_data.columns)
     stock_cumulative_returns.iloc[0, :] = 100
     stock_daily_returns = combined_data.pct_change(fill_method=None)
     stock_cumulative_returns.iloc[1:, :] = (1 + stock_daily_returns.iloc[1:, :]).cumprod() * 100
 
-    ticker_to_name = {ticker: yf.Ticker(ticker).info.get("longName", ticker) for ticker in combined_data.columns}
+    ticker_to_name = {}
+    for ticker in combined_data.columns:
+        try:
+            ticker_to_name[ticker] = yf.Ticker(ticker).info.get("longName", ticker)
+            time.sleep(1)
+        except Exception:
+            ticker_to_name[ticker] = ticker
+
     stock_cumulative_returns.rename(columns=ticker_to_name, inplace=True)
 
     for player in players_portfolio:
         player_name = player['name']
         stocks = player['picks']
-
         player_stock_data = combined_data[stocks]
 
         player_cumulative_returns = pd.Series(index=stock_cumulative_returns.index, dtype=float)
